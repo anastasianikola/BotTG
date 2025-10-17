@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: hh_bot_db
+    restart: always
+    environment:
+      POSTGRES_DB: TGBOT
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  bot:
+    build: .
+    container_name: hh_bot_app
+    depends_on:
+      - db
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=TGBOT
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - HH_API_URL=https://api.hh.ru
+      - COUNTRY_NAME=Россия
+    restart: unless-stopped
+
+volumes:
+  pgdata: {}

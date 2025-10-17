@@ -1,11 +1,14 @@
-# request.py
+import os
 import requests
+from dotenv import load_dotenv
 
-from config import HH_API_URL, COUNTRY_NAME
+load_dotenv()
 
+HH_API_URL = os.getenv("HH_API_URL")
+COUNTRY_NAME = os.getenv("COUNTRY_NAME")
 
 def get_city_id(city_name: str):
-    response = requests.get(HH_API_URL + "/areas")
+    response = requests.get(f"{HH_API_URL}/areas")
     if response.status_code != 200:
         return None
 
@@ -41,7 +44,7 @@ def get_vacancies(city_name, keyword, experience):
         "per_page": 5
     }
 
-    response = requests.get(HH_API_URL + "/vacancies", params=params)
+    response = requests.get(f"{HH_API_URL}/vacancies", params=params)
     if response.status_code != 200:
         return None
 
